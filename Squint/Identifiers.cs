@@ -1,5 +1,7 @@
-// SPDX-License-Identifier: LGPL-2.1-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Henrik O. Sørensen
+// This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+// the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 using System;
 using System.Collections.Generic;
@@ -8,10 +10,90 @@ namespace Squint;
 
 /// <summary>
 /// The identifier profile of UTS #39 section 3.1, restriction levels of section 5.2 and mixed
-/// number detection of section 5.3.
+/// number detection of section 5.3, and <see cref="Check(string, RestrictionLevel)"/>, which
+/// runs them together in the right order.
 /// </summary>
 public static class Identifiers
 {
+    /// <summary>
+    /// The whole check on one identifier, in the order the pieces have to run: the profile on
+    /// the input as given, NFKC, the profile again on the result, the restriction level against
+    /// <paramref name="permitted"/>, mixed numbers, and the skeleton.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The profile is checked before normalising as well as after, on purpose. A character
+    /// whose normalization differs between Unicode versions is, by that very fact, outside the
+    /// General Security Profile (its Identifier_Type is Not_NFKC), so checking the raw input
+    /// refuses it before any normaliser, of any version, has had a say. That is what makes the
+    /// verdict the same on every machine.
+    /// </para>
+    /// <para>
+    /// Nothing here is syntax. An empty string is accepted, and so is one of only punctuation;
+    /// the length, the first character and the characters a system reserves are the caller's
+    /// rules, applied on <see cref="IdentifierCheck.Normalized"/>.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">The text is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The level is <see cref="RestrictionLevel.Undefined"/>.</exception>
+    public static IdentifierCheck Check(string text, RestrictionLevel permitted)
+    {
+        return Check(text, permitted, IsInGeneralSecurityProfile);
+    }
+
+    /// <summary>
+    /// <see cref="Check(string, RestrictionLevel)"/> against a caller's identifier profile.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">The text or the profile is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">The level is <see cref="RestrictionLevel.Undefined"/>.</exception>
+    public static IdentifierCheck Check(string text, RestrictionLevel permitted, Func<int, bool> identifierProfile)
+    {
+        if (text is null)
+        {
+            throw new ArgumentNullException(nameof(text));
+        }
+
+        if (identifierProfile is null)
+        {
+            throw new ArgumentNullException(nameof(identifierProfile));
+        }
+
+        if (permitted < RestrictionLevel.AsciiOnly || permitted > RestrictionLevel.Unrestricted)
+        {
+            throw new ArgumentOutOfRangeException(nameof(permitted), permitted, "Not a restriction level.");
+        }
+
+        IdentifierProblems problems = IdentifierProblems.None;
+
+        if (!Satisfies(text, identifierProfile))
+        {
+            problems |= IdentifierProblems.OutsideProfile;
+        }
+
+        string normalized = Normalization.Nfkc(text);
+
+        if (!Satisfies(normalized, identifierProfile))
+        {
+            problems |= IdentifierProblems.OutsideProfile;
+        }
+
+        RestrictionLevel level = RestrictionLevelOf(normalized, identifierProfile);
+
+        if (level > permitted)
+        {
+            problems |= IdentifierProblems.ExceedsRestrictionLevel;
+        }
+
+        IReadOnlyList<int> numberSystems = NumberSystemsOf(normalized);
+
+        if (numberSystems.Count > 1)
+        {
+            problems |= IdentifierProblems.MixedNumbers;
+        }
+
+        return new IdentifierCheck(text, normalized, Confusables.Skeleton(normalized), level, numberSystems, problems);
+    }
+
     /// <summary>
     /// The Identifier_Type of a code point.
     /// </summary>
@@ -194,6 +276,21 @@ public static class Identifiers
     private static bool IsInGeneralSecurityProfile(int codePoint)
     {
         return StatusOf(codePoint) == IdentifierStatus.Allowed;
+    }
+
+    private static bool Satisfies(string text, Func<int, bool> identifierProfile)
+    {
+        int index = 0;
+
+        while (index < text.Length)
+        {
+            if (!identifierProfile(CodePoints.Read(text, ref index)))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>

@@ -15,7 +15,7 @@
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <Authors>Henrik O. Sørensen</Authors>
     <Description>Tired of squinting at strings for Cyrillic homoglyphs? Squint does it for you. UTS #39 Unicode Security Mechanisms from the Unicode 17.0 data: confusable skeletons, single/mixed/whole-script confusable classification, Script_Extensions and resolved script sets, restriction levels, Identifier_Status and Identifier_Type, mixed-number detection, and the four normalization forms. Pure managed code with its own normaliser, so it needs no ICU and gives the same answer on every platform.</Description>
-    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+    <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/henrikottesorensen/Squint</PackageProjectUrl>
     <RepositoryUrl>https://github.com/henrikottesorensen/Squint</RepositoryUrl>

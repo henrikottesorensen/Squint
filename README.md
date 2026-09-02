@@ -11,12 +11,24 @@ Identifier_Type, mixed-number detection, and the four normalization forms.
 
 Pure managed code with its own normaliser, so it needs no ICU, works in globalization-invariant
 mode, and gives the same answer on every platform from the same Unicode version as its
-confusable table. Targets `netstandard2.0`. No dependencies.
+confusable table. Targets `netstandard2.0`. No dependencies, and the tables travel inside the
+assembly, which is 280 KB for that reason.
 
 ## Usage
 
 ```csharp
 using Squint;
+
+// The whole check on an identifier, in the right order: the profile on the raw input, NFKC,
+// the restriction level against your ceiling, mixed numbers, the skeleton.
+IdentifierCheck check = Identifiers.Check("hеnrik", RestrictionLevel.HighlyRestrictive);
+check.IsAccepted;                                // false
+check.Problems;                                  // ExceedsRestrictionLevel - one Cyrillic е
+check.Level;                                     // MinimallyRestrictive
+check.Normalized;                                // the NFKC form: store and compare this
+check.Skeleton;                                  // "henrik": collides with the real one
+
+// The pieces, for anyone composing their own.
 
 // Section 4: the skeleton. Two strings are confusable when their skeletons are equal.
 Confusables.Skeleton("pаypаl");                 // "paypal" - two Cyrillic letters, one skeleton
@@ -54,11 +66,14 @@ Normalization.Nfkc("ﬁle");                       // "file"
 Normalization.Nfc("e\u0301");                    // "é"
 ```
 
-A username check, for example, is the composition: the profile check on the raw input, then
-`Normalization.Nfkc` to get the name's identity, then a refusal when
-`Identifiers.RestrictionLevelOf(name)` is looser than the level you accept, and a collision when
-`Confusables.Skeleton(name)` equals a stored skeleton. Store `UnicodeData.Version` beside
-anything you keep, and recompute when it changes.
+`Identifiers.Check` is that composition for a username or a label: refuse when it is not
+accepted, and treat it as a collision when its `Skeleton` equals a stored one. It is not syntax:
+length, first character and reserved names stay yours, applied to `Normalized`. Store
+`UnicodeData.Version` beside anything you keep, and recompute when it changes.
+
+Cost, measured in Release on an Apple M-series laptop: a skeleton of a 12-character mixed-script
+string is under a microsecond, a restriction level about a third of one, NFKC about half. Every
+call allocates its result; nothing is cached or pooled.
 
 ## What the answers are
 
@@ -66,7 +81,10 @@ anything you keep, and recompute when it changes.
 Default_Ignorable_Code_Point characters, replace each character by its prototype from
 `confusables.txt`, NFD again. That is what `skeleton(X)` was before revision 27 added
 bidirectional reordering, and what ICU computes. The bidirectional `bidiSkeleton` is not
-implemented; for left-to-right text with no right-to-left characters the two are the same.
+implemented; for left-to-right text with no right-to-left characters the two are the same. For
+Arabic or Hebrew identifiers, or any that mix directions, this means the skeleton is the one
+every implementation has computed so far, and it may differ from what a future ICU computes
+once it implements the reordering.
 
 A skeleton is an intermediate form: not for display, and not stable across Unicode versions. Store
 them if you like, and recompute them when the data changes.
@@ -179,6 +197,10 @@ touches the runtime's Unicode tables.
 
 **`Identifiers`**, sections 3.1, 5.2 and 5.3
 
+- `IdentifierCheck Check(string text, RestrictionLevel permitted)`: the whole check in order,
+  with an overload taking a `Func<int, bool>` profile. The result carries `Input`, `Normalized`,
+  `Skeleton`, `Level`, `NumberSystems`, `Problems` (a flags enum: `OutsideProfile`,
+  `ExceedsRestrictionLevel`, `MixedNumbers`) and `IsAccepted`
 - `IdentifierType TypeOf(int codePoint)`: a flags enum of the twelve types
 - `IdentifierStatus StatusOf(int codePoint)`: `Allowed` or `Restricted`
 - `bool IsAllowed(string text)`
@@ -208,14 +230,14 @@ between versions, so persist `Scripts.Code` rather than the number.
 **`RestrictionLevel`** is numbered as the specification numbers it, `AsciiOnly` at 1 through
 `Unrestricted` at 6, so `level <= permitted` is the acceptance test.
 
-Every enum but one has an `Undefined = 0` sentinel: the value an uninitialised field has, never
+Every enum but the two flags enums has an `Undefined = 0` sentinel: the value an uninitialised field has, never
 returned by the library and refused wherever one of its values is expected. `UnicodeScript.Unknown`
-is not that sentinel but the real property value of an unassigned code point. The exception is
-the flags enum `IdentifierType`, whose zero is `None`: "none of these", which masking can
-legitimately produce, and so not a value nobody chose.
+is not that sentinel but the real property value of an unassigned code point. The exceptions are
+the flags enums `IdentifierType` and `IdentifierProblems`, whose zero is `None`: "none of these",
+which masking can legitimately produce, and so not a value nobody chose.
 
 ## Licence
 
-The code is LGPL 2.1 or later. The data under `ucd/` and the tables generated from it are under
+The code is under the Mozilla Public License 2.0. The data under `ucd/` and the tables generated from it are under
 the Unicode Licence v3, reproduced in `LICENSE.unicode`, and the algorithms follow UTS #39 and the
 Unicode-licensed ICU4J `SpoofChecker`.
