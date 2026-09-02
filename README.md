@@ -68,7 +68,12 @@ Normalization.Nfc("e\u0301");                    // "é"
 
 `Identifiers.Check` is that composition for a username or a label: refuse when it is not
 accepted, and treat it as a collision when its `Skeleton` equals a stored one. It is not syntax:
-length, first character and reserved names stay yours, applied to `Normalized`. Store
+length, first character and reserved names stay yours, applied to `Normalized`. Because the
+profile is checked on the input *before* normalising, a ligature, a fullwidth letter or a
+mathematical alphabet is refused even though NFKC would fold it to letters that pass. For a
+username that is the right answer: a person who typed one is pasting or up to something. For a
+flow that folds first by design, a domain label after UTS #46 mapping, say, fold and then check:
+`Identifiers.Check(Normalization.Nfkc(text), level)`. Store
 `UnicodeData.Version` beside anything you keep, and recompute when it changes.
 
 Cost, measured in Release on an Apple M-series laptop: a skeleton of a 12-character mixed-script

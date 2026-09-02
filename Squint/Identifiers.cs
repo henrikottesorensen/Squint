@@ -26,7 +26,10 @@ public static class Identifiers
     /// whose normalization differs between Unicode versions is, by that very fact, outside the
     /// General Security Profile (its Identifier_Type is Not_NFKC), so checking the raw input
     /// refuses it before any normaliser, of any version, has had a say. That is what makes the
-    /// verdict the same on every machine.
+    /// verdict the same on every machine. It also means a ligature, a fullwidth letter or a
+    /// mathematical alphabet is refused although NFKC would fold it to letters that pass; a
+    /// caller whose flow folds first by design should pass <see cref="Normalization.Nfkc"/> of
+    /// the text instead.
     /// </para>
     /// <para>
     /// Nothing here is syntax. An empty string is accepted, and so is one of only punctuation;
