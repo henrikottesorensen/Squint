@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Squint.Generator/Squint.Generator.csproj" />
+  <Project Path="Squint.Test/Squint.Test.csproj" />
+  <Project Path="Squint/Squint.csproj" />
+</Solution>

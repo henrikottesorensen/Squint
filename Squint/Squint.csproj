@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!--
+        The lowest common denominator, deliberately. Nothing here needs a newer framework: the
+        tables are plain arrays, the lookups are binary searches, and the string handling is
+        UTF-16 code units by hand. One target means one build to test and no per-framework
+        surprises in what a caller gets.
+    -->
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>false</ImplicitUsings>
+
+    <PackageId>Squint</PackageId>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <Authors>Henrik O. Sørensen</Authors>
+    <Description>Tired of squinting at strings for Cyrillic homoglyphs? Squint does it for you. UTS #39 Unicode Security Mechanisms from the Unicode 17.0 data: confusable skeletons, single/mixed/whole-script confusable classification, Script_Extensions and resolved script sets, restriction levels, Identifier_Status and Identifier_Type, mixed-number detection, and the four normalization forms. Pure managed code with its own normaliser, so it needs no ICU and gives the same answer on every platform.</Description>
+    <PackageLicenseExpression>LGPL-2.1-or-later</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/henrikottesorensen/Squint</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/henrikottesorensen/Squint</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>unicode;uts39;uts-39;confusables;homoglyph;spoofing;skeleton;script;identifier;security</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../README.md" Pack="true" PackagePath="/" />
+    <None Include="../LICENSE.unicode" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Squint.Test" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="7.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>
