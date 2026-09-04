@@ -14,7 +14,7 @@
     <PackageId>Squint</PackageId>
     <MinVerTagPrefix>v</MinVerTagPrefix>
     <Authors>Henrik O. Sørensen</Authors>
-    <Description>Tired of squinting at strings for Cyrillic homoglyphs? Squint does it for you. UTS #39 Unicode Security Mechanisms from the Unicode 17.0 data: confusable skeletons, single/mixed/whole-script confusable classification, Script_Extensions and resolved script sets, restriction levels, Identifier_Status and Identifier_Type, mixed-number detection, and the four normalization forms. Pure managed code with its own normaliser, so it needs no ICU and gives the same answer on every platform.</Description>
+    <Description>Tired of squinting at strings for Cyrillic homoglyphs? Squint does it for you. Names.Inspect says whether a username is acceptable and, if not, which character is wrong, where, and why; Lookalikes.Match says whether two strings look alike. Underneath, in Squint.Uts39: UTS #39 Unicode Security Mechanisms from the Unicode 17.0 data: confusable skeletons, single/mixed/whole-script confusable classification, Script_Extensions and resolved script sets, restriction levels, Identifier_Status and Identifier_Type, mixed-number detection, and the four normalization forms. Pure managed code with its own normaliser, so it needs no ICU and gives the same answer on every platform.</Description>
     <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageProjectUrl>https://github.com/henrikottesorensen/Squint</PackageProjectUrl>
