@@ -10,7 +10,7 @@ using System.IO;
 namespace Squint.Generator;
 
 /// <summary>
-/// Regenerates <c>Squint/Generated/*.g.cs</c> from the Unicode data files under <c>ucd/</c>.
+/// Regenerates <c>Squint/Uts39/Generated/*.g.cs</c> from the Unicode data files under <c>ucd/</c>.
 /// </summary>
 /// <remarks>
 /// Run with no arguments from anywhere inside the repository; pass the repository root to run it
@@ -26,7 +26,7 @@ public static class Program
     {
         string root = args.Length > 0 ? args[0] : FindRepositoryRoot();
         string ucd = Path.Combine(root, "ucd");
-        string output = Path.Combine(root, "Squint", "Generated");
+        string output = Path.Combine(root, "Squint", "Uts39", "Generated");
 
         IReadOnlyDictionary<string, string> files = TableGenerator.Generate(ucd);
 

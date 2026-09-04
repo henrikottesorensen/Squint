@@ -683,5 +683,5 @@ dotnet_diagnostic.IDE0073.severity = warning
 
 # The tables are written by Squint.Generator from the files under ucd/, and are not for reading.
 # Analysers already skip files with an auto-generated header; this is the belt to that brace.
-[Squint/Generated/*.g.cs]
+[Squint/Uts39/Generated/*.g.cs]
 generated_code = true

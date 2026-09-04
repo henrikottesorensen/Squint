@@ -7,7 +7,7 @@
 // Written by Squint.Generator from the files under ucd/. Do not edit; regenerate.
 #nullable enable
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// The Identifier_Type and Identifier_Status properties, from IdentifierType.txt and IdentifierStatus.txt.

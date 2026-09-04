@@ -7,7 +7,7 @@
 // Written by Squint.Generator from the files under ucd/. Do not edit; regenerate.
 #nullable enable
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// Default_Ignorable_Code_Point from DerivedCoreProperties.txt, and the zero of every decimal digit run from UnicodeData.txt.

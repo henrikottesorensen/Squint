@@ -5,7 +5,7 @@
 
 using System;
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// The Identifier_Type property, UTS #39 section 3.1: why a code point is, or is not, in the

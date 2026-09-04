@@ -6,7 +6,7 @@
 using System;
 using System.Text;
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// Confusable detection, UTS #39 section 4: the skeleton, and the three classes of confusable.

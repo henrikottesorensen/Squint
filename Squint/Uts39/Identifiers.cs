@@ -6,7 +6,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// The identifier profile of UTS #39 section 3.1, restriction levels of section 5.2 and mixed

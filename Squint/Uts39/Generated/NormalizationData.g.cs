@@ -7,7 +7,7 @@
 // Written by Squint.Generator from the files under ucd/. Do not edit; regenerate.
 #nullable enable
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// Full canonical and compatibility decompositions, canonical combining classes, and the composition pairs, from UnicodeData.txt and DerivedNormalizationProps.txt.

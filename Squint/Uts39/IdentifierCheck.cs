@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// The outcome of <see cref="Identifiers.Check(string, RestrictionLevel)"/>: the verdict, and
@@ -13,13 +13,12 @@ namespace Squint;
 /// </summary>
 public sealed class IdentifierCheck
 {
-    internal IdentifierCheck(
-        string input,
-        string normalized,
-        string skeleton,
-        RestrictionLevel level,
-        IReadOnlyList<int> numberSystems,
-        IdentifierProblems problems)
+    internal IdentifierCheck(string input,
+                             string normalized,
+                             string skeleton,
+                             RestrictionLevel level,
+                             IReadOnlyList<int> numberSystems,
+                             IdentifierProblems problems)
     {
         Input = input;
         Normalized = normalized;

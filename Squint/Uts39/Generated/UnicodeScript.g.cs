@@ -7,7 +7,7 @@
 // Written by Squint.Generator from the files under ucd/. Do not edit; regenerate.
 #nullable enable
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// A value of the Unicode <c>Script</c> property, plus the three writing systems UTS #39

@@ -5,7 +5,7 @@
 
 using System;
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// What <see cref="Identifiers.Check(string, RestrictionLevel)"/> found wrong with an identifier.

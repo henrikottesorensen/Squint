@@ -97,7 +97,7 @@ public static class TableGenerator
         text.Append("// Written by Squint.Generator from the files under ucd/. Do not edit; regenerate.\n");
         text.Append("#nullable enable\n");
         text.Append('\n');
-        text.Append("namespace Squint;\n");
+        text.Append("namespace Squint.Uts39;\n");
         text.Append('\n');
         text.Append("/// <summary>\n");
         text.Append("/// A value of the Unicode <c>Script</c> property, plus the three writing systems UTS #39\n");

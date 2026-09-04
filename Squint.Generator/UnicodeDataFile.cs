@@ -15,11 +15,10 @@ namespace Squint.Generator;
 /// </summary>
 public sealed class UnicodeDataFile
 {
-    private UnicodeDataFile(
-        Dictionary<int, byte> combiningClasses,
-        Dictionary<int, int[]> canonicalDecompositions,
-        Dictionary<int, int[]> compatibilityDecompositions,
-        Dictionary<int, int> decimalDigits)
+    private UnicodeDataFile(Dictionary<int, byte> combiningClasses,
+                            Dictionary<int, int[]> canonicalDecompositions,
+                            Dictionary<int, int[]> compatibilityDecompositions,
+                            Dictionary<int, int> decimalDigits)
     {
         CombiningClasses = combiningClasses;
         CanonicalDecompositions = canonicalDecompositions;

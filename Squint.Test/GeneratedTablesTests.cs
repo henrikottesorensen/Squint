@@ -12,6 +12,7 @@ using AwesomeAssertions;
 using Xunit;
 
 using Squint.Generator;
+using Squint.Uts39;
 
 namespace Squint.Test;
 
@@ -33,12 +34,12 @@ public class GeneratedTablesTests
 
         foreach (KeyValuePair<string, string> file in generated)
         {
-            string path = Path.Combine(root, "Squint", "Generated", file.Key);
+            string path = Path.Combine(root, "Squint", "Uts39", "Generated", file.Key);
             File.Exists(path).Should().BeTrue($"{file.Key} should be committed");
             File.ReadAllText(path).Should().Be(file.Value, $"{file.Key} should be regenerated");
         }
 
-        Directory.GetFiles(Path.Combine(root, "Squint", "Generated")).Length.Should().Be(generated.Count);
+        Directory.GetFiles(Path.Combine(root, "Squint", "Uts39", "Generated")).Length.Should().Be(generated.Count);
     }
 
     /// <summary>

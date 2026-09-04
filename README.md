@@ -14,13 +14,52 @@ mode, and gives the same answer on every platform from the same Unicode version 
 confusable table. Targets `netstandard2.0`. No dependencies, and the tables travel inside the
 assembly, which is 280 KB for that reason.
 
-## Usage
+## Start here
+
+Three questions, in plain words, for anyone who has not read UTS #39 and does not intend to.
 
 ```csharp
 using Squint;
 
+// Is this name acceptable, and if not, what is wrong and where?
+Inspection report = Names.Inspect("hеnrik");     // the default policy: one script per name
+report.IsAcceptable;                             // false
+report.Findings[0].Message;                      // "'е' (U+0435, Cyrillic) at position 1 is Cyrillic among Latin letters and looks like 'e'"
+report.Findings[0].Kind;                         // FindingKind.MixedScripts - switch on this to word it yourself
+report.Findings[0].Position;                     // 1, with Length: highlight it in the form
+report.CleanForm;                                // the name to store and compare
+report.LookalikeKey;                             // "henrik": index this to catch lookalikes of taken names
+
+Names.IsAcceptable("søren");                     // true
+Names.IsAcceptable("Toys-Я-Us", NamePolicy.Anything);  // true; false under OneScript and Relaxed
+
+// Do these two look alike?
+Lookalikes.Match("paypal", "pаypаl");            // true
+Lookalikes.Key("𝗉𝖺𝗒𝗉𝖺𝗅");                         // "paypal"
+
+// Clean a string up for storage and comparison.
+Names.Clean("ﬁle");                              // "file"
+```
+
+A policy is one of four words: `Ascii`, `OneScript` (the default: Søren, Müller, Yıldız and
+東京太郎 pass, a Cyrillic letter among Latin ones does not), `Relaxed` (Latin with one other
+widely used script except Cyrillic or Greek) and `Anything` (any mixture, lookalikes caught by
+the key alone). A finding is one of six kinds: an invisible character, a character from another
+script, a digit from another number system, a compatibility form such as a ligature or a
+fullwidth letter, a character not allowed in names at all, and, under `Ascii` only, a character
+outside ASCII. Messages are English; the kind and position are there for any other wording.
+
+The rest of this file is the layer underneath, organised the way the specification is and
+kept in its own namespace, `Squint.Uts39`, so that it does not crowd the plain one.
+
+## Usage
+
+```csharp
+using Squint.Uts39;
+
 // The whole check on an identifier, in the right order: the profile on the raw input, NFKC,
-// the restriction level against your ceiling, mixed numbers, the skeleton.
+// the restriction level against your ceiling, mixed numbers, the skeleton. Names.Inspect is
+// this plus the findings.
 IdentifierCheck check = Identifiers.Check("hеnrik", RestrictionLevel.HighlyRestrictive);
 check.IsAccepted;                                // false
 check.Problems;                                  // ExceedsRestrictionLevel - one Cyrillic е
@@ -124,7 +163,7 @@ Everything under `ucd/` is the Unicode 17.0 data, unmodified: `confusables.txt`,
 `IdentifierStatus.txt` and `IdentifierType.txt` from the security data; `Scripts.txt`,
 `ScriptExtensions.txt`, `PropertyValueAliases.txt`, `UnicodeData.txt`,
 `DerivedCoreProperties.txt` and `DerivedNormalizationProps.txt` from the UCD. `Squint.Generator` turns them into the tables under
-`Squint/Generated`, which are committed; a test regenerates them in memory and fails if they are
+`Squint/Uts39/Generated`, which are committed; a test regenerates them in memory and fails if they are
 stale. To update the data, replace the files and run:
 
 ```bash
@@ -176,9 +215,29 @@ javac -cp icu4j-78.3.jar -d out tools/Icu4jOracle.java && java -cp icu4j-78.3.ja
 
 ## API
 
-Five static classes, one value type and five enums, all in namespace `Squint`. Every method
-takes a `string` or an `int` code point, throws on null or an out-of-range code point, and never
-touches the runtime's Unicode tables.
+Two layers in two namespaces: the plain one in `Squint`, the specification-shaped one in
+`Squint.Uts39`. Every method takes a `string` or an `int` code point, throws on null or an
+out-of-range code point, and never touches the runtime's Unicode tables.
+
+**`Names`**, the plain layer, namespace `Squint`
+
+- `Inspection Inspect(string name, NamePolicy policy = OneScript)`: `IsAcceptable`, `Findings`,
+  `CleanForm`, `LookalikeKey`, `Level`, `Policy`, `Input`
+- `bool IsAcceptable(string name, NamePolicy policy = OneScript)`
+- `string Clean(string name)`: NFKC
+- `Finding`: `Kind`, `Position`, `Length`, `Text`, `Message`. `FindingKind`: `Invisible`,
+  `MixedScripts`, `MixedDigits`, `CompatibilityForm`, `NotAllowed`, `NotAscii`
+
+**`Lookalikes`**
+
+- `bool Match(string first, string second)`
+- `string Key(string text)`: the skeleton of the NFKC form
+
+**`UnicodeData`**, namespace `Squint`
+
+- `string Version`, currently `17.0.0`: store it beside a key, recompute when it changes
+
+The expert layer, namespace `Squint.Uts39`:
 
 **`Confusables`**, UTS #39 section 4
 
@@ -219,10 +278,6 @@ touches the runtime's Unicode tables.
 - `string Nfd(string)`, `Nfc`, `Nfkd`, `Nfkc`
 - `int CombiningClass(int codePoint)`
 
-**`UnicodeData`**
-
-- `string Version`, currently `17.0.0`
-
 **`ScriptSet`** is an immutable 256-bit set of `UnicodeScript`: `Empty`, `All`,
 `Of(params UnicodeScript[])`, `Contains`, `Add`, `Remove`, `Intersect`, `Union`, `Intersects`,
 `IsSubsetOf`, `IsEmpty`, `IsAll`, `Count`, equality, enumeration, and a `ToString` that prints
@@ -235,7 +290,8 @@ between versions, so persist `Scripts.Code` rather than the number.
 **`RestrictionLevel`** is numbered as the specification numbers it, `AsciiOnly` at 1 through
 `Unrestricted` at 6, so `level <= permitted` is the acceptance test.
 
-Every enum but the two flags enums has an `Undefined = 0` sentinel: the value an uninitialised field has, never
+Every enum but the two flags enums has an `Undefined = 0` sentinel (`NamePolicy` and
+`FindingKind` included): the value an uninitialised field has, never
 returned by the library and refused wherever one of its values is expected. `UnicodeScript.Unknown`
 is not that sentinel but the real property value of an unassigned code point. The exceptions are
 the flags enums `IdentifierType` and `IdentifierProblems`, whose zero is `None`: "none of these",

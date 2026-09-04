@@ -6,7 +6,7 @@
 using System;
 using System.Text;
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// Reads and writes code points on UTF-16 strings by hand, which is what netstandard2.0 offers.

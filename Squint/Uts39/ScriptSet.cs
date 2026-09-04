@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// An immutable set of <see cref="UnicodeScript"/> values: a character's Script_Extensions, its

@@ -39,7 +39,7 @@ public sealed class SourceWriter
         _text.Append("// Written by Squint.Generator from the files under ucd/. Do not edit; regenerate.\n");
         _text.Append("#nullable enable\n");
         _text.Append('\n');
-        _text.Append("namespace Squint;\n");
+        _text.Append("namespace Squint.Uts39;\n");
         _text.Append('\n');
         _text.Append("/// <summary>\n");
         _text.Append("/// ").Append(summary).Append('\n');

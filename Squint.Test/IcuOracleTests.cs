@@ -15,6 +15,8 @@ using AwesomeAssertions;
 
 using Xunit;
 
+using Squint.Uts39;
+
 namespace Squint.Test;
 
 /// <summary>

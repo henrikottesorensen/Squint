@@ -3,7 +3,7 @@
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 // the MPL was not distributed with this file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// The restriction levels of UTS #39 section 5.2, numbered as the specification numbers them.

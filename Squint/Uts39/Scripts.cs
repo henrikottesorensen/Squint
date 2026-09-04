@@ -5,7 +5,7 @@
 
 using System;
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// Script properties and mixed-script detection, UTS #39 section 5.1.
@@ -21,37 +21,36 @@ public static class Scripts
     /// hand against it. What it decides is the Moderately Restrictive level, which admits Latin
     /// plus one other Recommended script other than Cyrillic or Greek.
     /// </remarks>
-    public static ScriptSet Recommended { get; } = ScriptSet.Of(
-        UnicodeScript.Common,
-        UnicodeScript.Inherited,
-        UnicodeScript.Arabic,
-        UnicodeScript.Armenian,
-        UnicodeScript.Bengali,
-        UnicodeScript.Cyrillic,
-        UnicodeScript.Devanagari,
-        UnicodeScript.Ethiopic,
-        UnicodeScript.Georgian,
-        UnicodeScript.Greek,
-        UnicodeScript.Gujarati,
-        UnicodeScript.Gurmukhi,
-        UnicodeScript.Hangul,
-        UnicodeScript.Han,
-        UnicodeScript.Hebrew,
-        UnicodeScript.Hiragana,
-        UnicodeScript.Katakana,
-        UnicodeScript.Kannada,
-        UnicodeScript.Khmer,
-        UnicodeScript.Lao,
-        UnicodeScript.Latin,
-        UnicodeScript.Malayalam,
-        UnicodeScript.Myanmar,
-        UnicodeScript.Oriya,
-        UnicodeScript.Sinhala,
-        UnicodeScript.Tamil,
-        UnicodeScript.Telugu,
-        UnicodeScript.Thaana,
-        UnicodeScript.Thai,
-        UnicodeScript.Tibetan);
+    public static ScriptSet Recommended { get; } = ScriptSet.Of(UnicodeScript.Common,
+                                                                UnicodeScript.Inherited,
+                                                                UnicodeScript.Arabic,
+                                                                UnicodeScript.Armenian,
+                                                                UnicodeScript.Bengali,
+                                                                UnicodeScript.Cyrillic,
+                                                                UnicodeScript.Devanagari,
+                                                                UnicodeScript.Ethiopic,
+                                                                UnicodeScript.Georgian,
+                                                                UnicodeScript.Greek,
+                                                                UnicodeScript.Gujarati,
+                                                                UnicodeScript.Gurmukhi,
+                                                                UnicodeScript.Hangul,
+                                                                UnicodeScript.Han,
+                                                                UnicodeScript.Hebrew,
+                                                                UnicodeScript.Hiragana,
+                                                                UnicodeScript.Katakana,
+                                                                UnicodeScript.Kannada,
+                                                                UnicodeScript.Khmer,
+                                                                UnicodeScript.Lao,
+                                                                UnicodeScript.Latin,
+                                                                UnicodeScript.Malayalam,
+                                                                UnicodeScript.Myanmar,
+                                                                UnicodeScript.Oriya,
+                                                                UnicodeScript.Sinhala,
+                                                                UnicodeScript.Tamil,
+                                                                UnicodeScript.Telugu,
+                                                                UnicodeScript.Thaana,
+                                                                UnicodeScript.Thai,
+                                                                UnicodeScript.Tibetan);
 
     /// <summary>
     /// The Script property of a code point; <see cref="UnicodeScript.Unknown"/> for one that has

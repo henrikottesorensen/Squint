@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Squint;
+namespace Squint.Uts39;
 
 /// <summary>
 /// The four Unicode normalization forms, from the library's own tables.
